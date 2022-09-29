@@ -1,7 +1,7 @@
 import { html, css, LitElement } from 'lit';
 
-const Statue = {
-	uninitialized: 0,
+const Status = {
+	unprepared: 0,
 	ready: 1,
 	init: 2,
 	success: 3,
@@ -15,7 +15,6 @@ const waitTime = 1000;
 export class SimpleCard extends LitElement {
 	static styles = css`
 		:host {
-			// background-color: red;
 			display: inline-block;
 		}
 		:host([test1]) {
@@ -29,34 +28,51 @@ export class SimpleCard extends LitElement {
 			width: 300px;
 			border-radius: 8px;
 			cursor: pointer;
-			transition: all 200ms linear;
+			transition: translateY 200ms linear;
 		}
 		.card-wrap:hover {
 			box-shadow: rgb(9 30 66 / 25%) 0px 8px 12px -2px;
 			transform: translateY(-2px);
 		}
-		
+
 		.img {
 			width: 100px; 
 			height: 100px;
 			background-color: #ccc;
 			border-radius: 100%;
+			margin-right: 20px;
+			clear: both;
+
 		}
 		.right-wrap {
-			margin: 5px 0 0 15px;
+			margin-top: 5px;
 		}
 		.test {
-			animation: animate 1s infinite ease-in-out;
+			animation: animate 1s infinite linear;
+		}
+		.clear {
+			clear: both;
 		}
 		@keyframes animate {
-			0% {
-				transform: scale(1, 1) translateY(-2px);
+
+			25% {
+				transform:  scale(0.98, 0.98) translateY(-2px);
 			}
 
 			50% {
-				transform: scale(1.05, 1.05) translateY(-2px);
+				transform: scale(1, 1) translateY(-2px);
+			}
+
+			75% {
+				transform:  scale(1.02, 1.02) translateY(-2px);
+			}
+
+			100% {
+				transform: scale(1, 1) translateY(-2px);
+
 			}
 		}
+
   	`;
 
 	static properties = {
@@ -64,45 +80,32 @@ export class SimpleCard extends LitElement {
 
 	constructor() {
 		super();
-		this.statue = Statue.uninitialized;
+		this.status = Status.unprepared;
 	}
 
 	debounce(fn, waitTime) {
 		let timer;
-		return function() {
+		return function(e) {
+			this.status = Status.ready;
 			const context = this;
-			const args = arguments;
+			const args = [e.target, ...arguments];
 			if (timer) {
 				clearTimeout(timer);
 			}
 			timer = setTimeout(() => {
 				fn.apply(context, args);
-			})
+			}, waitTime);
 		}
 	}
 
-	handleEnter(e) {
-		const ele = e.target;
-		this.enterTime = new Date().getTime();
-		
-		setTimeout(() => {
-			// if ()
-			ele.classList.add('test');
-		}, waitTime);
-		// if (new Date().getTime() - 
-		// ) {
-		// 	console.log(123)
-		// 	ele.classList.add('test');
-		// }
-		// setTimeout(() => {
-		// 	ele.classList.add('test');
-		// }, waitTime);
-		
+	handleEnter(target, e) {
+		if (this.status === Status.unprepared) return;
+		target.classList.add('test');
 	}
 
 	handleLeave(e) {
+		this.status = Status.unprepared;
 		const ele = e.target;
-		this.enterTime = null;
 		ele.classList.remove('test');
 	}
 
@@ -110,7 +113,7 @@ export class SimpleCard extends LitElement {
 		return html`
 			<div 
 				class="card-wrap"
-				@mouseenter="${this.handleEnter}"
+				@mouseenter="${this.debounce(this.handleEnter, waitTime)}"
 				@mouseleave="${this.handleLeave}"
 			>
 				<div class="img"></div>
@@ -118,6 +121,7 @@ export class SimpleCard extends LitElement {
 					<div class="title">this is title</div>
 					<div class="description">this is decription</div>
 				</div>
+				<div class="clear"></div>
 			</div>
 		`
 	}
