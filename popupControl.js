@@ -71,12 +71,6 @@ export default class PopupCardControl {
     }
 
     leavePopup = () => {
-        console.log(123)
-        // Array.from(document.body.children).forEach(node => {
-        //     if (node.nodeName.toLowerCase() === 'popup-card') {
-        //         node.remove();
-        //     }
-        // })
         this.hidden();
         this.opts.leaveCallBack();
     }
