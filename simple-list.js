@@ -1,12 +1,7 @@
 import { html, css, LitElement } from "lit";
 import "./simple-card.js";
+import data from './mockData';
 export class SimpleList extends LitElement {
-    static styles = css`
-        .wrap {
-            margin: 10px;
-            display: inline-block;
-        }
-    `;
 
     constructor() {
         super();
@@ -15,10 +10,13 @@ export class SimpleList extends LitElement {
 
     render() {
         return html `
-            ${Array.from({length: this.num}, () => {
-                return html`<div class="wrap"><simple-card></simple-card></div>` 
+            ${data.map(v => {
+                return html`<simple-card .data=${v}></simple-card>`
             })}
         `
+        // return html`
+        //     <simple-card .data=${data[0]}></simple-card>
+        // `
     }
 }
 

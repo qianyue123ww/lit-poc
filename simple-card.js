@@ -17,6 +17,7 @@ export class SimpleCard extends LitElement {
 	static styles = css`
 		:host {
 			display: inline-block;
+			margin: 10px;
 		}
 		:host([test1]) {
 			border: 1px solid red;
@@ -37,8 +38,10 @@ export class SimpleCard extends LitElement {
 			border: 1px solid rgb(228, 228, 231);
 			box-shadow: rgb(9 30 66 / 25%) 0px 4px 8px -2px;
 			display: flex;
+			align-items: center;
 			padding: 10px;
-			width: 300px;
+			width: 360px;
+			height: 120px;
 			border-radius: 8px;
 			transition: translateY 200ms linear;
 		}
@@ -54,6 +57,7 @@ export class SimpleCard extends LitElement {
 			border-radius: 100%;
 			margin-right: 20px;
 			clear: both;
+			border: 1px solid #eee;
 
 		}
 		.right-wrap {
@@ -86,12 +90,46 @@ export class SimpleCard extends LitElement {
 				transform: scale(1, 1) translateY(-2px);
 			}
 		}
-		.test {
-			transition: all 500ms ease-in-out;
+
+
+		.card2 {
+			background-color: #fff;
+			border: 1px solid rgb(228, 228, 231);
+			box-shadow: rgb(9 30 66 / 25%) 0px 4px 8px -2px;
+			/* display: flex;
+			align-items: center; */
+			width: 280px;
+			height: 300px;
+			border-radius: 8px;
+			transition: translateY 200ms linear;
+			overflow: hidden;
+		}
+		.img2 {
+			/* max-width: 100%; */
+			width: 100%;
+			height: 156px;
+			object-fit: contain;
+			/* height: 156px; */
+			/* height: 156px; */
+			/* max-width: 400px;
+			max-height: 500px; */
+			background-color: #ccc;
+		}
+		.desc {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			word-break:break-all;
+			word-wrap: break-word;
+			-webkit-box-orient: vertical;
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
 		}
   	`;
 
 	static properties = {
+		data: {
+			type: Object
+		}
 	};
 
 	constructor() {
@@ -121,39 +159,17 @@ export class SimpleCard extends LitElement {
 
 		this.popup = PopupCardControl.getInstance();
 		this.popup.init({
+			data: this.data,
 			width,
 			height,
 			x,
 			y,
-			dis: 20,
+			// offsetX: 100,
+			offsetY: 0,
 			leaveCallBack: () => {
 				target.classList.remove('paused');
 			}
 		});
-
-		// console.log(x, y);
-		// this.createElement(target);
-		// const body = document.getElementsByTagName('body')[0];
-		// const test = document.createElement('popup-card');
-		// test.style.width = width + 'px';
-		// test.style.height = height + 'px';
-		// test.style.left = x + 'px';
-		// test.style.top = y + 'px';
-		// body.appendChild(test);
-		// console.log(target)
-
-		// setTimeout(() => {
-		// 	const dis = 20;
-		// 	test.title = 'hello wenwen';
-		// 	test.classList.add('test');
-		// 	test.style.left = x - dis + 'px';
-		// 	test.style.top = y - dis + 'px';
-		// 	// test.style.right
-		// 	test.style.width = '400px';
-		// 	test.style.height = '200px';
-		// 	console.log(x, y);
-		// }, 200)
-
 	}
 
 	debounce(fn, waitTime) {
@@ -174,7 +190,6 @@ export class SimpleCard extends LitElement {
 	}
 
 	handleEnter(target, e) {
-		console.log('enter', this.status)
 		if (this.status === Status.unprepared) return;
 		target.classList.add('breath');
 
@@ -182,17 +197,16 @@ export class SimpleCard extends LitElement {
 		setTimeout(() => {
 			if (this.status === Status.unprepared) return;
 			this.loadingPopupMain(target);
-		}, 1000);
+		}, 2000);
 
 	}
 
 	handleLeave(e) {
-		console.log(1, e)
 		this.status = Status.unprepared;
 		const ele = e.target.children[0];
 		ele.classList.remove('breath', 'move');
-		console.log(e.target);
 	}
+
 
 	render() {
 		return html`
@@ -201,13 +215,19 @@ export class SimpleCard extends LitElement {
 				@mouseenter="${this.debounce(this.handleEnter, waitTime)}"
 				@mouseleave="${this.handleLeave}"
 			>
-				<div class="card">
-					<div class="img"></div>
+				<!-- <div class="card">
+					<img src=${this.data.icon} class="img"/>
 					<div class="right-wrap">
-						<div class="title">this is title${this.status}</div>
-						<div class="description">this is decription</div>
+						<div class="title">${this.data.title}</div>
+						<div class="desc">${this.data.description}</div>
 					</div>
-					<div class="clear"></div>
+				</div> -->
+
+				<div class="card2">
+					<img src=${this.data.icon} class="img2" />
+					<div style="padding: 10px;">
+						<div class="desc">${this.data.description}</div>
+					</div>
 				</div>
 			</div>
 		`
