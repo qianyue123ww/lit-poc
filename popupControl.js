@@ -88,10 +88,10 @@ export default class PopupCardControl {
             this.setLenAndWidth();
             this.setPos();
 
-            setTimeout(() => {
-                this.target.remove();
-                this.opts.leaveCallBack();
-            }, 200)
+            // setTimeout(() => {
+            //     this.target.remove();
+            //     this.opts.leaveCallBack();
+            // }, 200)
         })
         // setTimeout(() => {
         //     this.setPos();

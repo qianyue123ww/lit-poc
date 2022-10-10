@@ -1,5 +1,6 @@
 import { html, css, LitElement } from "lit";
 import "./simple-card.js";
+
 import data from './mockData';
 export class SimpleList extends LitElement {
     static styles = css`
@@ -22,9 +23,6 @@ export class SimpleList extends LitElement {
 
             </div>
         `
-        // return html`
-        //     <simple-card .data=${data[0]}></simple-card>
-        // `
     }
 }
 
