@@ -77,6 +77,7 @@ export default class PopupCardControl {
 
     leavePopup = () => {
         requestAnimationFrame(() => {
+            this.target.hiddenBtn();
             this.setLenAndWidth();
             this.setPos();
 
