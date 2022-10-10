@@ -1,23 +1,13 @@
 import './popup-card';
 
 export default class PopupCardControl {
-    static getInstance() {
-        if (!PopupCardControl.instance) {
-            PopupCardControl.instance = new PopupCardControl();
-        }
-        return PopupCardControl.instance;
-    }
-
     constructor(opts) {
         this.defaultOpts = {
             title: 'hello wenwen',
             offsetY: 20,
             scale: 1.3
         };
-        if (!this.target) {
-            this.target = document.createElement('popup-card');
-        }
-
+        this.target = document.createElement('popup-card');
     }
 
     init(opts) {
@@ -25,18 +15,18 @@ export default class PopupCardControl {
             ...this.defaultOpts,
             ...opts,
         };
-        this.target.addEventListener('mouseleave', this.leavePopup, false);
         this.hidden();
+        this.target.addEventListener('mouseleave', this.leavePopup, false);
         document.body.appendChild(this.target);
-        this.readyGo();
+        this.setLenAndWidth();
+        this.setPos();
+        this.target.data = this.opts.data;
+        this.target.readyGo = this.readyGo.bind(this);
     }
 
 
     readyGo() {
-        this.setLenAndWidth();
-        this.setPos();
         this.show();
-        this.target.data = this.opts.data;
         this.beginPopup();
     }
 
@@ -61,8 +51,6 @@ export default class PopupCardControl {
     beginPopup() {
         setTimeout(() => {
             console.log(this.opts.title, this.target)
-            this.target.title = this.opts.title;
-            this.target.data = this.opts.data;
 
             const {x, y, offsetX, offsetY, scale, width} = this.opts;
             let left = 0;
@@ -78,7 +66,7 @@ export default class PopupCardControl {
                 left = x - calcOffsetX > 0 ? x -calcOffsetX : x;
             }
             const top = y - offsetY > 0 ? y - offsetY : y;
-            const height = this.target.style.height + 'px';
+            // const height = this.target.style.height + 'px';
             this.target.style.width = len + 'px';
 
             this.setLenAndWidth(len, 380);
@@ -87,10 +75,31 @@ export default class PopupCardControl {
         }, 100);
     }
 
+    // 按時
 
+
+    // 结束
     leavePopup = () => {
-        this.hidden();
-        this.opts.leaveCallBack();
+        // this.hidden();
+        // this.opts.leaveCallBack();
+        // this.lastId = this.target.data.id;
+
+        requestAnimationFrame(() => {
+            this.setLenAndWidth();
+            this.setPos();
+
+            setTimeout(() => {
+                this.target.remove();
+                this.opts.leaveCallBack();
+            }, 200)
+        })
+        // setTimeout(() => {
+        //     this.setPos();
+        //     this.setLenAndWidth();
+        //     this.target.remove();
+        //     this.opts.leaveCallBack();
+        // }, 0);
+
     }
 
 }

@@ -1,5 +1,6 @@
 import { html, css, LitElement } from 'lit';
-import './simple-card';
+import {styleMap} from 'lit/directives/style-map.js';
+
 class PopupCard extends LitElement {
     static styles = css`
         :host {
@@ -7,7 +8,6 @@ class PopupCard extends LitElement {
             transition: all 200ms linear;
             width: 100%;
             height: 100%;
-            /* border: 1px solid rgb(228, 228, 231); */
 			box-shadow: rgb(9 30 66 / 25%) 0px 4px 8px -2px;
 			background-color: #fff;
 			border-radius: 8px;
@@ -40,23 +40,15 @@ class PopupCard extends LitElement {
 			-webkit-line-clamp: 2;
 		}
 
-        /* .card2 {
-
-        } */
         .img2 {
-			/* max-width: 100%; */
             width: 100%;
             max-height: 200px;
+            // max-height: 200px;
+
             object-fit: cover;
-            /* height: 300px; */
-			/* width: 100%;
-            height: 210px; */
-			/* height: 156px; */
-            /* max-width: 400px;
-            width: 100%;
-			height: 200px; */
 			background-color: #ccc;
 		}
+
     `
 
     static properties = {
@@ -65,40 +57,46 @@ class PopupCard extends LitElement {
         },
         title: {
             type: String
+        },
+        videoCanPlay: {
+            type: Boolean
         }
     }
     constructor(opts) {
         super();
         this.title = 'hello world';
         const videoplayer = document.getElementById('videoplayer');
-        const test = document.getElementById('id');
+        this.videoCanPlay = false;
 
-        console.log(test, videoplayer);
+        // setTimeout(() => {
+        //     this.imgloaded();
+        // }, 3000)
+
     }
 
-    async test(e) {
-        // target.pla();
-
-
-        console.log(123, e.target);
+    videoLoaded(e) {
         const target = e.target;
-        target.currentTime = 1;
-        target.controls = false;
-
-        target.pause();
-        // await
         setTimeout(() => {
-            const videoplayer = document.getElementById('videoplayer');
-            console.log(e.target, videoplayer);
-            // videoplayer.play();
+            this.videoCanPlay = true;
             target.muted = true;
             target.controls = true;
-            // target.currentTime = 5;
             target.play();
-        }, 3000)
+        }, 2000 );
     }
 
+    imgloaded(e) {
+        console.log('img is loaded');
+        this.videoCanPlay = false;
+        this.readyGo();
+    }
+    
+
     render() {
+        const imgStyles = {'display': this.videoCanPlay ? 'none' : 'block'};
+        const videoStyles= {'display': this.videoCanPlay ? 'block' : 'none'};
+        // const imgStyles = {'opacity': this.videoCanPlay ? 0 : 1};
+        // const videoStyles= {'opacity': this.videoCanPlay ? 1 : 0};
+
         return html`
             <!-- <div class="card">
                 <img src=${this.data.icon} class="img"/>
@@ -108,17 +106,28 @@ class PopupCard extends LitElement {
                 </div>
             </div>
             <div class="test">${this.title}</div> -->
+            <!--mp4在线测试视频： https://www.jianshu.com/p/34ce7f9b469a -->
+            <!-- const test = http://vfx.mtime.cn/Video/2019/03/09/mp4/190309153658147087.mp4 -->
+            <!-- src="http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4" -->
+
             <div class="card2">
-                <!-- <img src=${this.data.icon} class="img2"/> -->
-                <video
-                    id="videoplayer"
-                    @mouseover="${this.test}"
-                    poster=${this.data.icon}
-                    class="img2"
-                    src="http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
-                >
-                    当前浏览器不支持video标签
-                </video>
+                <div class="img2-wrap">
+                    <video
+                        @canplay="${this.videoLoaded}"
+                        id="videoplayer"
+                        class="img2"
+                        src=${this.data.video}
+                        style=${styleMap(videoStyles)}
+                    >
+                        当前浏览器不支持video标签
+                    </video>
+                    <img 
+                        src=${this.data.icon} 
+                        class="img2"
+                        @load="${this.imgloaded}"
+                        style=${styleMap(imgStyles)}
+                    />
+                </div>
                 <div class="title" id="test">${this.data.title}</div>
                 <div class="desc">${this.data.description}</div>
             </div>

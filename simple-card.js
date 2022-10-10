@@ -1,4 +1,5 @@
 import { html, css, LitElement } from 'lit';
+import {classMap} from 'lit/directives/class-map.js';
 // import './popup-card';
 import PopupCardControl from './popupControl';
 const Status = {
@@ -18,9 +19,6 @@ export class SimpleCard extends LitElement {
 		:host {
 			display: inline-block;
 			margin: 10px;
-		}
-		:host([test1]) {
-			border: 1px solid red;
 		}
 		.card-wrap {
 			cursor: pointer;
@@ -44,6 +42,7 @@ export class SimpleCard extends LitElement {
 			height: 120px;
 			border-radius: 8px;
 			transition: translateY 200ms linear;
+
 		}
 		.move {
 			box-shadow: rgb(9 30 66 / 25%) 0px 8px 12px -2px;
@@ -102,12 +101,13 @@ export class SimpleCard extends LitElement {
 			height: 300px;
 			border-radius: 8px;
 			transition: translateY 200ms linear;
+            box-sizing: border-box;
 			overflow: hidden;
 		}
 		.img2 {
 			/* max-width: 100%; */
 			width: 100%;
-			height: 156px;
+			height: 100%;
 			object-fit: contain;
 			/* height: 156px; */
 			/* height: 156px; */
@@ -115,6 +115,22 @@ export class SimpleCard extends LitElement {
 			max-height: 500px; */
 			background-color: #ccc;
 		}
+        .img2-wrap {
+            position: relative;
+			height: 156px;
+        }
+        .test::before {
+            content: '将鼠标停留于此处即可播放';
+            display: block;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            color: #fff;
+            background-color: #333;
+			font-size: 12px;
+			padding: 2px 5px;
+			z-index: 1;
+        }
 		.desc {
 			overflow: hidden;
 			text-overflow: ellipsis;
@@ -129,12 +145,23 @@ export class SimpleCard extends LitElement {
 	static properties = {
 		data: {
 			type: Object
-		}
+		},
+		flag: {
+			type: Boolean
+		},
 	};
 
 	constructor() {
 		super();
 		this.status = Status.unprepared;
+		this.flag = false;
+
+		// setTimeout(() => {
+		// 	// this.classes.test = true;
+		// 	this.flag = !this.flag;
+		// 	// this.classes.test = this.flag;
+		// 	console.log(this.classes, this.flag);
+		// }, 3000)
 	}
 
 	createElement(targe) {
@@ -153,11 +180,13 @@ export class SimpleCard extends LitElement {
 
 	// loading popupcard main
 	async loadingPopupMain(target) {
+		// this.popup = PopupCardControl.getInstance();
+		this.popup = new PopupCardControl();
+
 		target.classList.add('paused');
 		const {width, height, x, y} = this.getPos(target);
 		// const {width, height, x, y}  = await this.getPos(target);
 
-		this.popup = PopupCardControl.getInstance();
 		this.popup.init({
 			data: this.data,
 			width,
@@ -175,6 +204,9 @@ export class SimpleCard extends LitElement {
 	debounce(fn, waitTime) {
 		let timer;
 		return function(e) {
+			this.flag = true;
+			clearTimeout(this.beginAnimateTimer);
+
 			const targe = e.target.children[0];
 			targe.classList.add('move');
 			this.status = Status.ready;
@@ -193,11 +225,19 @@ export class SimpleCard extends LitElement {
 		if (this.status === Status.unprepared) return;
 		target.classList.add('breath');
 
+		// if (this.data.id === this.popup?.lastId) {
+		// 	setTimeout(() => {
+		// 		this.popup.readyGo();
+
+		// 	}, 500)
+		// 	return;
+		// }
+
 		// loading data
-		setTimeout(() => {
+		this.beginAnimateTimer = setTimeout(() => {
 			if (this.status === Status.unprepared) return;
 			this.loadingPopupMain(target);
-		}, 2000);
+		}, 1500);
 
 	}
 
@@ -205,10 +245,13 @@ export class SimpleCard extends LitElement {
 		this.status = Status.unprepared;
 		const ele = e.target.children[0];
 		ele.classList.remove('breath', 'move');
+		this.flag = false;
 	}
 
 
 	render() {
+		const classes = {'img2-wrap': true, 'test': this.flag};
+
 		return html`
 			<div
 				class="card-wrap"
@@ -224,7 +267,9 @@ export class SimpleCard extends LitElement {
 				</div> -->
 
 				<div class="card2">
-					<img src=${this.data.icon} class="img2" />
+					<div class=${classMap(classes)}>
+						<img src=${this.data.icon} class="img2" />
+					</div>
 					<div style="padding: 10px;">
 						<div class="desc">${this.data.description}</div>
 					</div>
