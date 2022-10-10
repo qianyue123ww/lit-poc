@@ -75,31 +75,20 @@ export default class PopupCardControl {
         }, 100);
     }
 
-    // 按時
-
-
-    // 结束
     leavePopup = () => {
-        // this.hidden();
-        // this.opts.leaveCallBack();
-        // this.lastId = this.target.data.id;
-
         requestAnimationFrame(() => {
             this.setLenAndWidth();
             this.setPos();
 
-            // setTimeout(() => {
+            setTimeout(() => {
+                this.target.remove();
+                this.opts.leaveCallBack();
+            }, 200)
+            // requestAnimationFrame(() => {
             //     this.target.remove();
             //     this.opts.leaveCallBack();
-            // }, 200)
+            // })
         })
-        // setTimeout(() => {
-        //     this.setPos();
-        //     this.setLenAndWidth();
-        //     this.target.remove();
-        //     this.opts.leaveCallBack();
-        // }, 0);
-
     }
 
 }

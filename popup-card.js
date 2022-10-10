@@ -30,20 +30,56 @@ class PopupCard extends LitElement {
 			border: 1px solid #eee;
 
 		}
-        .desc {
+        .desc-wrap {
+			padding: 10px;
+		}
+		.title {
 			overflow: hidden;
 			text-overflow: ellipsis;
 			word-break:break-all;
 			word-wrap: break-word;
 			-webkit-box-orient: vertical;
 			display: -webkit-box;
-			-webkit-line-clamp: 2;
+			-webkit-line-clamp: 1;
+			font-size: 18px;
+			font-weight: bold;
 		}
+		.desc {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			word-break:break-all;
+			word-wrap: break-word;
+			-webkit-box-orient: vertical;
+			display: -webkit-box;
+			-webkit-line-clamp: 3;
+			font-size: 14px;
+			color: #3a3a3a;
+			min-height: 50px;
+			margin: 5px 0;
+		}
+		.time {
+			color: #7c7a7a;
+			font-size: 12px;
+		}
+        .btn {
+            border-radius: 8px;
+            border: none;
+            padding: 5px 40px;
+            color: #777778;
+            margin-top: 10px;
+        }
+        /* .img2-wrap {
+            height: 250px;
+            position: relative;
+			transition: all 200ms linear;
 
+        } */
         .img2 {
             width: 100%;
-            max-height: 200px;
+            /* height: 100%; */
+            /* max-height: 200px; */
             // max-height: 200px;
+
 
             object-fit: cover;
 			background-color: #ccc;
@@ -89,7 +125,7 @@ class PopupCard extends LitElement {
         this.videoCanPlay = false;
         this.readyGo();
     }
-    
+
 
     render() {
         const imgStyles = {'display': this.videoCanPlay ? 'none' : 'block'};
@@ -121,15 +157,20 @@ class PopupCard extends LitElement {
                     >
                         当前浏览器不支持video标签
                     </video>
-                    <img 
-                        src=${this.data.icon} 
+                    <img
+                        src=${this.data.icon}
                         class="img2"
                         @load="${this.imgloaded}"
                         style=${styleMap(imgStyles)}
                     />
                 </div>
-                <div class="title" id="test">${this.data.title}</div>
-                <div class="desc">${this.data.description}</div>
+                <!-- <div class="title" id="test">${this.data.title}</div> -->
+                <div class="desc-wrap">
+						<div class="title">${this.data.title}</div>
+						<div class="desc">${this.data.description}</div>
+						<div class="time">播出时间：${this.data.time}</div>
+                    <button class="btn">查看详情</button>
+				</div>
             </div>
         `
     }

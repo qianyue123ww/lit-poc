@@ -37,11 +37,23 @@ export class SimpleCard extends LitElement {
 		.img {
 			width: 100%;
 			height: 100%;
-			object-fit: contain;
+			/* object-fit: contain; */
+            object-fit: cover;
 			background-color: #ccc;
 		}
 		.desc-wrap {
 			padding: 10px;
+		}
+		.title {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			word-break:break-all;
+			word-wrap: break-word;
+			-webkit-box-orient: vertical;
+			display: -webkit-box;
+			-webkit-line-clamp: 1;
+			font-size: 18px;
+			font-weight: bold;
 		}
 		.desc {
 			overflow: hidden;
@@ -50,7 +62,15 @@ export class SimpleCard extends LitElement {
 			word-wrap: break-word;
 			-webkit-box-orient: vertical;
 			display: -webkit-box;
-			-webkit-line-clamp: 2;
+			-webkit-line-clamp: 3;
+			font-size: 14px;
+			color: #3a3a3a;
+			min-height: 50px;
+			margin: 5px 0;
+		}
+		.time {
+			color: #7c7a7a;
+			font-size: 12px;
 		}
 		.move {
 			box-shadow: rgb(9 30 66 / 25%) 0px 8px 12px -2px;
@@ -205,7 +225,9 @@ export class SimpleCard extends LitElement {
 						<img src=${this.data.icon} class="img" />
 					</div>
 					<div class="desc-wrap">
+						<div class="title">${this.data.title}</div>
 						<div class="desc">${this.data.description}</div>
+						<div class="time">播出时间：${this.data.time}</div>
 					</div>
 				</div>
 			</div>
