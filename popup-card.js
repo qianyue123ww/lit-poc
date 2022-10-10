@@ -87,18 +87,18 @@ class PopupCard extends LitElement {
     }
 
     videoLoaded(e) {
+        console.log('video loaded')
         const target = e.target;
         setTimeout(() => {
             this.videoCanPlay = true;
             target.muted = true;
             target.controls = true;
             target.play();
-        }, 2000 );
+        }, 2000);
     }
 
     imgloaded(e) {
         console.log('img is loaded');
-        this.videoCanPlay = false;
         this.readyGo();
     }
 
